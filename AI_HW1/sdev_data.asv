@@ -1,9 +1,0 @@
-function [ output_args ] = sdev_data( mean, D )
-%SDEV_DATA Summary of this function goes here
-%   Detailed explanation goes here
-
-for i=1:size(D,1)
-    ((D(i,1)-mean(1,1))^2)
-
-end
-
