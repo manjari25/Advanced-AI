@@ -1,0 +1,78 @@
+clc;
+clear all;
+close all;
+data = load ('columbus_price_vs_sf.txt');
+
+% Question 4a - Compute mean, standard deviation, minimum, maximum of data
+% Minimum and maximum
+mind = min(data);
+maxd = max(data);
+[min_d,max_d] = min_max_data(data);
+
+% Mean
+meand = mean(data);
+m = mean_data(data);
+
+% Standard Deviation
+sdd = std(data);
+s = sdev_data(m,data);
+
+% Question 4b - Compute linear regression coefficients
+N = size(data,1);
+s_xy = 0;
+s_x2 = 0;
+% sigma of xi*yi
+for i = 1:N
+    s_xy = s_xy + (data(i,1)*data(i,2));
+end
+% sigma of xi^2
+for i = 1:N
+    s_x2 = s_x2 + (data(i,2)^2);
+end
+% sigma of xi and yi
+s_x_y = sum(data);
+
+% Calculate w1 and w0
+w1 = ((N*(s_xy)) - (s_x_y(1,2)*s_x_y(1,1)))/((N*(s_x2))- (s_x_y(1,2)^2));
+w0 = (s_x_y(1,1) - (w1*s_x_y(1,2)))/N;
+
+% Display the coefficients
+fprintf('Coefficients are - \n w1 = %f,w0 = %f',w1,w0);
+
+% Question 4c - Batch Gradient Descent
+no_w1 = w1 + 100;
+no_w0 = w0 + 100;
+alpha = 0.000001;
+hw = 0;
+s_y_hw = 0;
+s_y_hw_x = 0;
+count = 0;
+epsilon = 0;
+
+%Update until convergence
+while ((no_w0~=w0)&&(no_w1~=w1))
+   % Display w1 and w0
+   fprintf('\nw1 = %f,w0 = %f',no_w1,no_w0);
+   % sigma yj-predicted yj
+   for i=1:N
+        hw(i,1) = hw(i,1)+ no_w1*data(i,2)+no_w0; 
+   end 
+   % sigma (yj-predictedyj)xj
+   for i=1:N
+        s_y_hw  = s_y_hw + data(i,1) - hw(i,1);
+   end
+   for i=1:N
+      s_y_hw_x  = s_y_hw_x + (data(i,1) - hw(i,1))*data(i,2);
+   end
+   % Update weights
+   no_w0 = no_w0 + (alpha*s_y_hw);
+   no_w1 = no_w1 + (alpha*s_y_hw_x);
+   
+   % Update count variable to count iterations
+   count = count+1;
+end
+
+
+
+
+
